@@ -111,7 +111,38 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful
  ```
  > เป็นการคอมเม้นต์
 
-เเละทำการ seve เเละทำการ [restart nginx](#restart-nginx)
+- เเละทำการ seve เเละทำการ [restart nginx](#restart-nginx)
+
+- จากนั้นให้สร้างไฟล์ DomainName.conf
+```
+sudo nano /etc/nginx/conf.d/{DomainName.conf}
+```
+> เช่น /etc/nginx/conf.d/catanddog.conf
+- เพิ่งโด้ดต่อไปนี้
+
+```
+server {
+
+        root /usr/share/nginx/html;
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name DomainName.com www.DomainName.shop;
+
+        location / {
+                try_files $uri $uri/ =404;
+                proxy_pass http://localhost:3000; 
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+        }
+
+   
+}
+```
+>  proxy_pass คือ port ของ app ของคุณ ในที่นี้คือ port : 3000
+- เเละทำการ seve เเละทำการ [restart nginx](#restart-nginx)
 ```
 ### ตอนนี้คุณควรจะสามารถเยี่ยมชม IP ของคุณโดยไม่มีพอร์ต (พอร์ต 80) และดูแอปของคุณได้ผ่าน browser
 
@@ -132,15 +163,16 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful
 * ns3.digitalocean.com
 
 > อาจใช้เวลาเล็กน้อยในการเผยแพร่
-
+```
 9. เพิ่ม SSL กับ LetsEncrypt
 ```
 sudo add-apt-repository ppa:certbot/certbot
 sudo apt-get update
 sudo apt install python3-certbot-nginx
 sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
-
+```
 # ใช้ได้ 90 วันเท่านั้น ทดสอบกระบวนการต่ออายุด้วยคำสั้งด้านล่างนี้
+```
 certbot renew --dry-run
 ```
 
