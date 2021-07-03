@@ -111,7 +111,7 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful
  ```
  > เป็นการคอมเม้นต์
 
-เเละทำการ seve เเละทำการ [restart nginx](###restart-nginx)
+เเละทำการ seve เเละทำการ [restart nginx](#restart-nginx)
 ```
 ### ตอนนี้คุณควรจะสามารถเยี่ยมชม IP ของคุณโดยไม่มีพอร์ต (พอร์ต 80) และดูแอปของคุณได้ผ่าน browser
 
