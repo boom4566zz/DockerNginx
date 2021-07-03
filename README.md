@@ -1,16 +1,17 @@
 # DorkerNginx
-# Node.js Deployment
+# การ Deploy Node.js หรือ Docker
 
-> Steps to deploy a Node.js app to DigitalOcean using PM2, NGINX as a reverse proxy and an SSL from LetsEncrypt
+> ขั้นตอนในการปรับใช้เซิฟเวอร์ Node.js หรือ docker ของ DigitalOcean โดยใช้ PM2, NGINX เป็น reverse proxy และ SSL จาก LetsEncrypt
 
-## 1. Sign up for Digital Ocean
-If you use the referal link below, you get $10 free (1 or 2 months)
-https://m.do.co/c/5424d440c63a
+## 1. ลงทะเบียน Digital Ocean
+หากคุณใช้ลิงก์อ้างอิงด้านล่าง คุณจะได้รับ $10 ฟรี(1 or 2 months)  
+https://www.digitalocean.com/    
+  
 
-## 2. Create a droplet and log in via ssh
- I will be using the root user, but would suggest creating a new user
+## 2. สร้าง droplet และเข้าสู่ระบบผ่าน ssh
+ ฉันจะใช้ผู้ใช้ root แต่แนะนำให้สร้างผู้ใช้ใหม่
 
-## 3. Install Node/NPM
+## 3. ติดตั้ง Node/NPM
 ```
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 
@@ -19,39 +20,37 @@ sudo apt install nodejs
 node --version
 ```
 
-## 4. Clone your project from Github
-There are a few ways to get your files on to the server, I would suggest using Git
-```
-git clone yourproject.git
-```
 
-### 5. Install dependencies and test app
+### 4. run โปรเจ็ค node ของคุณ
+จากตัวอย่างด้านล่างคือการเปิดโปรเจ็ค node.js ของคุณ  //simple port :3000
+
 ```
-cd yourproject
+cd yourproject 
 npm install
-npm start (or whatever your start command)
-# stop app
-ctrl+C
+node yourproject.js //port3000
 ```
-## 6. Setup PM2 process manager to keep your app running
+>จากตัวอย่างเป็นเพียงการทดลองเปิด port 3000 ของ application จาก node.js ของคุณ  
+> ถ้าคุณเปิด port ผ่าน docker ให้ข้ามขั้นตอนถัดไป
+## 5. ตั้งค่าตัวจัดการด้วย PM2 เพื่อให้แอปของคุณทำงานต่อไป
+> PM2 จะใช้สำหรับ serives ที่เป็น node.js
+
 ```
 sudo npm i pm2 -g
-pm2 start app (or whatever your file name)
+pm2 start app (หรือชื่อไฟล์อะไรก็ตามของคุณ)
 
 # Other pm2 commands
 pm2 show app
 pm2 status
 pm2 restart app
 pm2 stop app
-pm2 logs (Show log stream)
-pm2 flush (Clear logs)
+pm2 logs (เเสดง log stream)
+pm2 flush (เคลียร์ logs)
 
-# To make sure app starts when reboot
-pm2 startup ubuntu
+# เพื่อให้แน่ใจว่าแอปเริ่มทำงาน pm2 เมื่อรีบูท ubuntu
 ```
-### You should now be able to access your app using your IP and port. Now we want to setup a firewall blocking that port and setup NGINX as a reverse proxy so we can access it directly using port 80 (http)
+>ตอนนี้คุณควรจะสามารถเข้าถึงแอพของคุณโดยใช้ IP และพอร์ตของคุณ ตอนนี้เราต้องการตั้งค่าไฟร์วอลล์ที่บล็อกพอร์ตนั้นและตั้งค่า NGINX เป็น reverse proxy เพื่อให้เราสามารถเข้าถึงได้โดยตรงโดยใช้พอร์ต 80 (http)
 
-## 7. Setup ufw firewall
+## 6. ติดตั้ง ufw firewall
 ```
 sudo ufw enable
 sudo ufw status
@@ -60,13 +59,15 @@ sudo ufw allow http (Port 80)
 sudo ufw allow https (Port 443)
 ```
 
-## 8. Install NGINX and configure
+## 7. ติดตั้ง  NGINX เเละ configure
 ```
 sudo apt install nginx
 
 sudo nano /etc/nginx/sites-available/default
 ```
-Add the following to the location part of the server block
+เพิ่มส่วนต่อไปนี้ไปยัง location path  ของ the server block
+> หากคุณใช้ 1 เซิฟเวอร์ต่อ 1 เว็บให่วิธีต่อไปนี้
+- มองหาตำเเหน่ง location / เเละทำการเเก้ไขตามตัวอย่างต่อไปนี้
 ```
     server_name yourdomain.com www.yourdomain.com;
 
@@ -79,6 +80,8 @@ Add the following to the location part of the server block
         proxy_cache_bypass $http_upgrade;
     }
 ```
+### restart nginx
+### เเละทำการ seve เเละทำขั้นตอนด้านล่างต่อไป
 ```
 # Check NGINX config
 sudo nginx -t
@@ -86,36 +89,59 @@ sudo nginx -t
 # Restart NGINX
 sudo service nginx restart
 ```
+> หากมีข้อความต่อไปนี้จะถือว่าผ่าน ไม่มี  <span style="color:red"> error</span>.
+```
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
 
-### You should now be able to visit your IP with no port (port 80) and see your app. Now let's add a domain
+```
 
-## 9. Add domain in Digital Ocean
-In Digital Ocean, go to networking and add a domain
+> หรือ ถ้าหากคุณมีหลายโดเมน ให้ทำตามขั้นตอนต่อไปนี้ เเทน--
+ - ลบไฟล์ default จาก /etc/nginx/sites-available/default
+ - ทำการเเก้ไข nginx.conf จาก /etc/nginx/conf.d
+ - ทำการปิดคอมเม้นจากตำเเหน่งต่อไปนี้
+ ```
+    include /etc/nginx/conf.d/*.conf;
+	include /etc/nginx/sites-enabled/*;
+ ```
+ เป็น
+  ```
+    include /etc/nginx/conf.d/*.conf;
+	## include /etc/nginx/sites-enabled/*;
+ ```
+ > เป็นการคอมเม้นต์
 
-Add an A record for @ and for www to your droplet
+เเละทำการ seve เเละทำการ [restart nginx](###restart-nginx)
+```
+### ตอนนี้คุณควรจะสามารถเยี่ยมชม IP ของคุณโดยไม่มีพอร์ต (พอร์ต 80) และดูแอปของคุณได้ผ่าน browser
+
+## 8. เพิ่มโดเมนใน Digital Ocean
+
+- ใน Digital Ocean ไปที่เครือข่ายและเพิ่มโดเมน
+
+ - เพิ่ม record A สำหรับ @ และสำหรับ www ลงใน droplet ของคุณ
 
 
-## Register and/or setup domain from registrar
-I prefer Namecheap for domains. Please use this affiliate link if you are going to use them
-https://namecheap.pxf.io/c/1299552/386170/5618
+## จดทะเบียนและ/หรือตั้งค่าโดเมนจากผู้รับจดทะเบียน
 
-Choose "Custom nameservers" and add these 3
+
+เลือก "เนมเซิร์ฟเวอร์ที่กำหนดเอง" และเพิ่มสิ่งเหล่านี้
 
 * ns1.digitalocean.com
 * ns2.digitalocean.com
 * ns3.digitalocean.com
 
-It may take a bit to propogate
+> อาจใช้เวลาเล็กน้อยในการเผยแพร่
 
-10. Add SSL with LetsEncrypt
+9. เพิ่ม SSL กับ LetsEncrypt
 ```
 sudo add-apt-repository ppa:certbot/certbot
 sudo apt-get update
-sudo apt-get install python-certbot-nginx
+sudo apt install python3-certbot-nginx
 sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
 
-# Only valid for 90 days, test the renewal process with
+# ใช้ได้ 90 วันเท่านั้น ทดสอบกระบวนการต่ออายุด้วยคำสั้งด้านล่างนี้
 certbot renew --dry-run
 ```
 
-Now visit https://yourdomain.com and you should see your Node app
+
