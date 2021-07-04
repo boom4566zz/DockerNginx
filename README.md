@@ -1,5 +1,5 @@
 ![enter image description here](https://testimages1.s3.ap-southeast-1.amazonaws.com/boomgitprofile.png)
-# NOTE : Dorker,node.js => Nginx 
+# NOTE : Docker,node.js => Nginx 
 # การ Deploy Node.js หรือ Docker
 
 > ขั้นตอนในการปรับใช้เซิฟเวอร์ Node.js หรือ docker ของ DigitalOcean โดยใช้ PM2, NGINX เป็น reverse proxy และ SSL จาก LetsEncrypt
@@ -82,7 +82,7 @@ sudo nano /etc/nginx/sites-available/default
     }
 ```
 ### restart nginx
-### เเละทำการ seve เเละทำขั้นตอนด้านล่างต่อไป
+### เเละทำการ save เเละทำขั้นตอนด้านล่างต่อไป
 ```
 # Check NGINX config
 sudo nginx -t
