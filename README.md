@@ -172,7 +172,7 @@ sudo apt-get update
 sudo apt install python3-certbot-nginx
 sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
 ```
-# ใช้ได้ 90 วันเท่านั้น ทดสอบกระบวนการต่ออายุด้วยคำสั้งด้านล่างนี้
+> ใช้ได้ 90 วันเท่านั้น ทดสอบกระบวนการต่ออายุด้วยคำสั้งด้านล่างนี้
 ```
 certbot renew --dry-run
 ```
