@@ -1,4 +1,5 @@
-# DorkerNginx
+![enter image description here](https://testimages1.s3.ap-southeast-1.amazonaws.com/boomgitprofile.png)
+# NOTE : Dorker,node.js => Nginx 
 # การ Deploy Node.js หรือ Docker
 
 > ขั้นตอนในการปรับใช้เซิฟเวอร์ Node.js หรือ docker ของ DigitalOcean โดยใช้ PM2, NGINX เป็น reverse proxy และ SSL จาก LetsEncrypt
