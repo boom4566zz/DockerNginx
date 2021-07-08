@@ -63,7 +63,7 @@ sudo ufw allow https (Port 443)
 ## 7. ติดตั้ง  NGINX เเละ configure
 ```
 sudo apt install nginx
-
+sudo apt install nano
 sudo nano /etc/nginx/sites-available/default
 ```
 เพิ่มส่วนต่อไปนี้ไปยัง location path  ของ the server block
