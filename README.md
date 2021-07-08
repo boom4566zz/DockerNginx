@@ -70,16 +70,24 @@ sudo nano /etc/nginx/sites-available/default
 > หากคุณใช้ 1 เซิฟเวอร์ต่อ 1 เว็บให่วิธีต่อไปนี้
 - มองหาตำเเหน่ง location / เเละทำการเเก้ไขตามตัวอย่างต่อไปนี้
 ```
-    server_name yourdomain.com www.yourdomain.com;
 
-    location / {
-        proxy_pass http://localhost:5000; #whatever port your app runs on
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
+server {
+
+        root /usr/share/nginx/html;
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name DomainName.com www.DomainName.com;
+
+        location / {
+                proxy_pass http://localhost:3000; #whatever port your app runs on
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+        }
+
+}
 ```
 ### restart nginx
 ### เเละทำการ save เเละทำขั้นตอนด้านล่างต่อไป
